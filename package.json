@@ -19,6 +19,9 @@
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",
     "rxjs": "~7.8.0",
+    "scandit-web-datacapture-barcode": "^6.24.1",
+    "scandit-web-datacapture-core": "^6.24.1",
+    "scandit-web-datacapture-id": "^6.24.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
   },
