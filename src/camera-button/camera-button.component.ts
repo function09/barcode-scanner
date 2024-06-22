@@ -5,6 +5,7 @@ import {
   IdCaptureOverlay,
   IdCaptureSettings,
   IdDocumentType,
+  IdImageType,
   SupportedSides,
   idCaptureLoader,
 } from 'scandit-web-datacapture-id';
@@ -21,11 +22,14 @@ export class CameraButtonComponent {
 
   async enableIdScanning() {
     try {
-      const UI = new SDCCore.DataCaptureView();
+      // For visualizing process
+      const view = new SDCCore.DataCaptureView();
 
-      UI.connectToElement(document.getElementById('cameraUI')!);
-      UI.showProgressBar();
-      UI.setProgressBarMessage('Loading...');
+      // Bind to HTML element
+      view.connectToElement(document.getElementById('cameraUI')!);
+
+      // Show loading status
+      view.showProgressBar;
 
       // Configuration
       await SDCCore.configure({
@@ -37,58 +41,59 @@ export class CameraButtonComponent {
       });
       console.log('configuration works!');
 
-      UI.hideProgressBar();
+      // Hide progress bar
+      view.hideProgressBar();
 
-      // Data Capture Context
+      // Create context
       const context = await SDCCore.DataCaptureContext.create();
-      await UI.setContext(context);
-      console.log('context info: ', context);
 
-      // Camera setup
+      // set default camera
       const camera = SDCCore.Camera.default;
+
+      await camera.applySettings(IdCapture.recommendedCameraSettings);
       await context.setFrameSource(camera);
-      console.log('camera info:', camera);
 
-      // const cameraSettings = new SDCCore.CameraSettings();
-      // console.log('camera settings: ', cameraSettings);
+      await view.setContext(context);
 
-      // ID Capture Settings
+      view.addControl(new SDCCore.CameraSwitchControl());
+
+      // Create the IdCapture settings needed
       const settings = new IdCaptureSettings();
-      settings.supportedDocuments = [IdDocumentType.DLVIZ];
-      settings.supportedSides = SupportedSides.FrontAndBack;
-      console.log('IDCapture Settings: ', settings);
+      settings.supportedDocuments = [
+        IdDocumentType.DLVIZ,
+        IdDocumentType.IdCardVIZ,
+      ];
+      settings.setShouldPassImageTypeToResult(IdImageType.Face, true);
 
-      // Listener
+      //Create the IdCapture mode with the new settings
       const idCapture = await IdCapture.forContext(context, settings);
+
+      // Setup the listener to get notified about results
+
+      idCapture.addListener({
+        didCaptureId: async (idCaptureInstance: IdCapture, session) => {
+          // Disable the IdCapture mode to handle the current result
+          await idCapture.setEnabled(false);
+
+          const capturedId = session.newlyCapturedId!;
+          console.log(capturedId);
+          void idCapture.reset();
+        },
+        didRejectId: async () => {
+          await idCapture.setEnabled(false);
+          console.log('Document type not supported.');
+        },
+      });
+
+      // Apply new overlay for newly created IdCapture mode
+      await IdCaptureOverlay.withIdCaptureForView(idCapture, view);
+
+      // Disable IdCapture until camera is accessed
       await idCapture.setEnabled(false);
 
-      const listener = {
-        didCaptureId: (idCapture: any, session: any) => {
-          if (session.newlyCapturedId.aamvaBarcodeResult != null) {
-            console.log('ID captured: ', session.newlyCapturedId);
-          }
-        },
-        didFailWithError: (idCapture: any, error: any, session: any) => {
-          console.log('Capture failed:', error);
-        },
-      };
-      console.log('listener: ', listener);
-
-      idCapture.addListener(listener);
-
-      // Capture View
-      const view = await SDCCore.DataCaptureView.forContext(context);
-      view.connectToElement(document.getElementById('cameraUI')!);
-
-      let overlay = await IdCaptureOverlay.withIdCaptureForView(
-        idCapture,
-        view
-      );
-
-      console.log(overlay);
-
-      // Turn on camera
+      // Finally, switch on camera
       await camera.switchToDesiredState(SDCCore.FrameSourceState.On);
+      await idCapture.setEnabled(true);
     } catch (error) {
       console.log('An error occured: ', error);
     }
