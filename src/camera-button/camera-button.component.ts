@@ -78,7 +78,7 @@ export class CameraButtonComponent {
       idCapture.addListener({
         didCaptureId: async (idCaptureInstance: IdCapture, session) => {
           // Disable the IdCapture mode to handle the current result
-          await idCapture.setEnabled(false);
+          // await idCapture.setEnabled(false);
 
           const capturedId = session.newlyCapturedId!;
 
@@ -91,6 +91,7 @@ export class CameraButtonComponent {
 
           // Turn off camera if successful capture
           await idCapture.setEnabled(false);
+          await camera.switchToDesiredState(SDCCore.FrameSourceState.Off);
         },
         didRejectId: async () => {
           await idCapture.setEnabled(false);
