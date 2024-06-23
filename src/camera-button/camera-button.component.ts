@@ -19,7 +19,13 @@ import {
 })
 export class CameraButtonComponent {
   buttonName = 'Activate camera';
-
+  firstName = '';
+  lastName = '';
+  fullName = '';
+  sex = '';
+  dateOfBirth: any;
+  age: any;
+  address = '';
   async enableIdScanning() {
     try {
       // For visualizing process
@@ -76,8 +82,15 @@ export class CameraButtonComponent {
           await idCapture.setEnabled(false);
 
           const capturedId = session.newlyCapturedId!;
-          document.getElementById('result')?.append(capturedId.firstName!);
-          void idCapture.reset();
+
+          this.firstName = capturedId.firstName!;
+          this.lastName = capturedId.lastName!;
+          this.dateOfBirth =
+            capturedId.dateOfBirth?.month! +
+            capturedId.dateOfBirth?.day! +
+            capturedId.dateOfBirth?.year!;
+          this.age = capturedId.age!;
+          this.address = capturedId.address!;
         },
         didRejectId: async () => {
           await idCapture.setEnabled(false);
