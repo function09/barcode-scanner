@@ -76,7 +76,7 @@ export class CameraButtonComponent {
           await idCapture.setEnabled(false);
 
           const capturedId = session.newlyCapturedId!;
-          console.log(capturedId);
+          document.getElementById('result')?.append(capturedId.firstName!);
           void idCapture.reset();
         },
         didRejectId: async () => {
