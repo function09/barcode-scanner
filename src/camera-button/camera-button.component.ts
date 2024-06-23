@@ -87,6 +87,7 @@ export class CameraButtonComponent {
           this.lastName = capturedId.lastName!;
           this.documentNumber = capturedId.documentNumber;
           this.age = capturedId.age!;
+          this.sex = capturedId.sex!;
           this.address = capturedId.address!;
         },
         didRejectId: async () => {
