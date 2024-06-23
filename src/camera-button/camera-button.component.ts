@@ -19,7 +19,6 @@ import {
 })
 export class CameraButtonComponent {
   buttonName = 'Activate camera';
-  photo: any;
   firstName = '';
   lastName = '';
   fullName = '';
@@ -87,7 +86,6 @@ export class CameraButtonComponent {
           const capturedId = session.newlyCapturedId!;
 
           view.detachFromElement();
-          this.photo = capturedId.idImageOfType!;
           this.firstName = capturedId.firstName!;
           this.lastName = capturedId.lastName!;
           this.documentNumber = capturedId.documentNumber;
