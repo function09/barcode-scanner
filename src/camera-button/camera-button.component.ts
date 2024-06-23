@@ -75,7 +75,6 @@ export class CameraButtonComponent {
       const idCapture = await IdCapture.forContext(context, settings);
 
       // Setup the listener to get notified about results
-
       idCapture.addListener({
         didCaptureId: async (idCaptureInstance: IdCapture, session) => {
           // Disable the IdCapture mode to handle the current result
@@ -89,6 +88,9 @@ export class CameraButtonComponent {
           this.age = capturedId.age!;
           this.sex = capturedId.sex!;
           this.address = capturedId.address!;
+
+          // Turn off camera if successful capture
+          await idCapture.setEnabled(false);
         },
         didRejectId: async () => {
           await idCapture.setEnabled(false);
