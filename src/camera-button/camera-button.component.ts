@@ -85,6 +85,8 @@ export class CameraButtonComponent {
 
           const capturedId = session.newlyCapturedId!;
 
+          view.detachFromElement();
+
           this.firstName = capturedId.firstName!;
           this.lastName = capturedId.lastName!;
           this.documentNumber = capturedId.documentNumber;
