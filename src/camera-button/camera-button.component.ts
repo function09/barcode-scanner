@@ -19,6 +19,7 @@ import {
 })
 export class CameraButtonComponent {
   buttonName = 'Activate camera';
+  photo: any;
   firstName = '';
   lastName = '';
   fullName = '';
@@ -35,7 +36,7 @@ export class CameraButtonComponent {
       view.connectToElement(document.getElementById('cameraUI')!);
 
       // Show loading status
-      view.showProgressBar;
+      view.showProgressBar();
 
       // Configuration
       await SDCCore.configure({
@@ -71,7 +72,7 @@ export class CameraButtonComponent {
       ];
       settings.setShouldPassImageTypeToResult(IdImageType.Face, true);
 
-      //Create the IdCapture mode with the new settings
+      // Create the IdCapture mode with the new settings
       const idCapture = await IdCapture.forContext(context, settings);
 
       // Setup the listener to get notified about results
@@ -86,7 +87,7 @@ export class CameraButtonComponent {
           const capturedId = session.newlyCapturedId!;
 
           view.detachFromElement();
-
+          this.photo = capturedId.idImageOfType!;
           this.firstName = capturedId.firstName!;
           this.lastName = capturedId.lastName!;
           this.documentNumber = capturedId.documentNumber;
