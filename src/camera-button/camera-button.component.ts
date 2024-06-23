@@ -23,7 +23,7 @@ export class CameraButtonComponent {
   lastName = '';
   fullName = '';
   sex = '';
-  dateOfBirth: any;
+  documentNumber: any;
   age: any;
   address = '';
   async enableIdScanning() {
@@ -85,10 +85,7 @@ export class CameraButtonComponent {
 
           this.firstName = capturedId.firstName!;
           this.lastName = capturedId.lastName!;
-          this.dateOfBirth =
-            capturedId.dateOfBirth?.month! +
-            capturedId.dateOfBirth?.day! +
-            capturedId.dateOfBirth?.year!;
+          this.documentNumber = capturedId.documentNumber;
           this.age = capturedId.age!;
           this.address = capturedId.address!;
         },
